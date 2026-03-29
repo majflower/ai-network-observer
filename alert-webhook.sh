@@ -1,7 +1,7 @@
 #!/bin/bash
 # Envoyer alerte sur Slack/Discord
 
-LOGS_DIR="/home/maj/ai-network-observer/ai-network/logs"
+LOGS_DIR="/app/logs"
 
 # Surveiller les fichiers ALERT
 inotifywait -m -e create $LOGS_DIR |

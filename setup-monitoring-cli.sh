@@ -16,7 +16,7 @@ echo "  Grafana + Prometheus + Neo4j"
 echo "=========================================="
 echo ""
 
-cd /home/maj/ai-network-observer/ai-network
+cd /app
 
 # ============================================
 # PARTIE 1: PROMETHEUS - Configuration
@@ -402,7 +402,7 @@ cat > neo4j/scripts/import-from-json.sh << 'EOFIMPORT'
 #!/bin/bash
 # Import graph data from JSON to Neo4j
 
-LOGS_DIR="/home/maj/ai-network-observer/ai-network/logs"
+LOGS_DIR="/app/logs"
 LATEST_GRAPH=$(ls -t $LOGS_DIR/session_*_network_graph.json 2>/dev/null | head -1)
 
 if [ -z "$LATEST_GRAPH" ]; then

@@ -6,7 +6,7 @@ echo "  Test Rapide AI Network Observer"
 echo "=========================================="
 echo ""
 
-cd /home/maj/ai-network-observer/ai-network
+cd /app
 
 # 1. Modifier durée
 echo "[1/5] Configuration durée 2 minutes..."

@@ -7,7 +7,7 @@ python3 << 'EOFPY'
 import sys
 import json
 import glob
-sys.path.insert(0, '/home/maj/ai-network-observer/ai-network')
+sys.path.insert(0, '/app')
 
 from src.ml.anomaly_detector import NetworkAnomalyDetector
 

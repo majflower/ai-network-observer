@@ -5,7 +5,7 @@ echo "🤖 Training ML Model..."
 
 python3 << 'EOFPY'
 import sys
-sys.path.insert(0, '/home/maj/ai-network-observer/ai-network')
+sys.path.insert(0, '/app')
 
 from src.ml.training_pipeline import MLTrainingPipeline
 
