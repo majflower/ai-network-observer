@@ -55,3 +55,11 @@ Email: [VOTRE_EMAIL]
 ---
 
 **⭐ Star if useful for SOC automation!**
+
+### Screenshots
+
+**AI Analysis in Action**
+![LLM Analysis](docs/images/analysis.png)
+
+**Project Structure**
+![Structure](docs/images/structure.png)
