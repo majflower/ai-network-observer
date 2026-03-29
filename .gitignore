@@ -154,3 +154,5 @@ logs/*.txt
 **/__pycache__/
 *.pyc
 .env
+logs/
+grafana_data/
