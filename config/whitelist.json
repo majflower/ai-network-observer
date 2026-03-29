@@ -1,0 +1,33 @@
+{
+  "trusted_domains": [
+    "githubusercontent.com",
+    "vscode-cdn.net",
+    "github.com",
+    "microsoft.com",
+    "azure.com",
+    "grafana.com"
+  ],
+  "trusted_ips": [
+    "13.107.0.0/16",
+    "140.82.112.0/20",
+    "185.199.108.0/22",
+    "20.50.0.0/16"
+  ]
+}
+EOFcat > /home/maj/ai-network-observer/ai-network/config/whitelist.json << 'EOF'
+{
+  "trusted_domains": [
+    "githubusercontent.com",
+    "vscode-cdn.net",
+    "github.com",
+    "microsoft.com",
+    "azure.com",
+    "grafana.com"
+  ],
+  "trusted_ips": [
+    "13.107.0.0/16",
+    "140.82.112.0/20",
+    "185.199.108.0/22",
+    "20.50.0.0/16"
+  ]
+}

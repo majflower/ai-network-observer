@@ -1,0 +1,141 @@
+{
+  "dashboard": {
+    "title": "Network Security Monitor",
+    "tags": ["network", "security", "ai"],
+    "timezone": "browser",
+    "refresh": "10s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Network Risk Score",
+        "type": "gauge",
+        "gridPos": {"x": 0, "y": 0, "w": 6, "h": 6},
+        "targets": [{
+          "expr": "network_risk_score",
+          "refId": "A"
+        }],
+        "options": {
+          "showThresholdLabels": false,
+          "showThresholdMarkers": true
+        },
+        "fieldConfig": {
+          "defaults": {
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 40, "color": "yellow"},
+                {"value": 70, "color": "red"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "DNS Queries Rate",
+        "type": "graph",
+        "gridPos": {"x": 6, "y": 0, "w": 9, "h": 6},
+        "targets": [{
+          "expr": "rate(dns_queries_total[5m])",
+          "legendFormat": "{{protocol}}",
+          "refId": "A"
+        }]
+      },
+      {
+        "id": 3,
+        "title": "DNS Threats",
+        "type": "graph",
+        "gridPos": {"x": 15, "y": 0, "w": 9, "h": 6},
+        "targets": [
+          {
+            "expr": "rate(dns_dga_detected_total[5m])",
+            "legendFormat": "DGA Detected",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(dns_tunneling_detected_total[5m])",
+            "legendFormat": "DNS Tunneling",
+            "refId": "B"
+          },
+          {
+            "expr": "rate(dns_beaconing_detected_total[5m])",
+            "legendFormat": "C2 Beaconing",
+            "refId": "C"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "HTTP Requests",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 6, "w": 12, "h": 6},
+        "targets": [{
+          "expr": "rate(http_requests_total[5m])",
+          "legendFormat": "{{method}}",
+          "refId": "A"
+        }]
+      },
+      {
+        "id": 5,
+        "title": "LLM Analysis Duration (p95)",
+        "type": "graph",
+        "gridPos": {"x": 12, "y": 6, "w": 12, "h": 6},
+        "targets": [{
+          "expr": "histogram_quantile(0.95, llm_analysis_duration_seconds)",
+          "legendFormat": "95th percentile",
+          "refId": "A"
+        }]
+      },
+      {
+        "id": 6,
+        "title": "Active Threats",
+        "type": "stat",
+        "gridPos": {"x": 0, "y": 12, "w": 6, "h": 4},
+        "targets": [{
+          "expr": "sum(network_threats_total)",
+          "refId": "A"
+        }],
+        "options": {
+          "colorMode": "background"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 5, "color": "yellow"},
+                {"value": 10, "color": "red"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 7,
+        "title": "Packet Processing Rate",
+        "type": "graph",
+        "gridPos": {"x": 6, "y": 12, "w": 9, "h": 6},
+        "targets": [{
+          "expr": "rate(packets_processed_total[1m])",
+          "legendFormat": "Packets/sec",
+          "refId": "A"
+        }]
+      },
+      {
+        "id": 8,
+        "title": "Graph Nodes by Type",
+        "type": "piechart",
+        "gridPos": {"x": 15, "y": 12, "w": 9, "h": 6},
+        "targets": [{
+          "expr": "graph_nodes_total",
+          "legendFormat": "{{node_type}}",
+          "refId": "A"
+        }]
+      }
+    ]
+  }
+}

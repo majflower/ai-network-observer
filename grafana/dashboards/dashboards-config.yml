@@ -1,0 +1,17 @@
+# Grafana Dashboard Provisioning - Enterprise Standard
+apiVersion: 1
+
+providers:
+  # Network Security Suite - AI Powered
+  - name: 'AI Network Observer Suite'
+    orgId: 1
+    folder: 'Security Operations Center' # Nom de dossier plus pro
+    type: file
+    disableDeletion: true # Sécurité : Empêche la suppression accidentelle via l'UI
+    editable: true        # Permet de tuner les graphes en direct
+    updateIntervalSeconds: 10 # Rafraîchissement plus rapide pour le temps réel
+    allowUiUpdates: true
+    options:
+      # Chemin aligné avec ton montage de volume Docker
+      path: /etc/grafana/provisioning/dashboards
+      foldersFromFilesStructure: true

@@ -1,0 +1,42 @@
+groups:
+  - name: network_security
+    interval: 30s
+    rules:
+      # DNS Threats
+      - alert: HighDNSThreats
+        expr: rate(dns_high_risk_total[5m]) > 5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High DNS threat rate detected"
+          description: "{{ $value }} DNS threats per second"
+      
+      # Network Risk Score
+      - alert: HighRiskScore
+        expr: network_risk_score > 70
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Network risk score critical"
+          description: "Risk score: {{ $value }}"
+      
+      # Observer Down
+      - alert: ObserverDown
+        expr: up{job="network-observer"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Network Observer is down"
+      
+      # LLM Analysis Slow
+      - alert: SlowLLMAnalysis
+        expr: histogram_quantile(0.95, llm_analysis_duration_seconds) > 120
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "LLM analysis taking too long"
+          description: "95th percentile: {{ $value }}s"

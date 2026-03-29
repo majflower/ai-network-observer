@@ -1,0 +1,126 @@
+# AI Network Observer Configuration File
+# Copy to config.yaml and customize
+
+# Capture Configuration
+capture:
+  backend: scapy  # scapy or ebpf
+  interface: eth0
+  bpf_filter: ""  # BPF filter expression (empty = capture all)
+  buffer_size: 65536
+
+# Session Configuration
+session:
+  duration_minutes: 30
+  auto_restart: true
+  output_dir: /var/log/network_observer
+
+# Analysis Thresholds
+thresholds:
+  dns:
+    entropy_threshold: 3.5
+    beaconing_cv: 0.3
+    subdomain_limit: 10
+    query_length_max: 150
+  
+  http:
+    risk_score_threshold: 50
+    max_url_length: 2000
+  
+  tls:
+    unknown_client_threshold: 5
+  
+  graph:
+    hub_degree_threshold: 50
+    isolation_threshold: 2
+
+# AI Configuration
+ai:
+  enabled: false
+  provider: anthropic
+  model: claude-sonnet-4-20250514
+  api_key_env: ANTHROPIC_API_KEY
+  max_tokens: 2000
+  temperature: 0.0
+
+# Privacy Configuration
+privacy:
+  enable_masking: true
+  mask_ips: true
+  mask_domains: true
+  remove_pii: true
+  salt: "change-this-salt-value"
+  
+  # PII patterns to detect
+  pii_patterns:
+    - email
+    - phone
+    - api_key
+    - password
+    - credit_card
+    - ssn
+
+# Graph Configuration
+graph:
+  enable_baseline: false
+  baseline_update_interval: 3600  # seconds
+  export_format: json  # json, gexf, graphml
+  
+  # Database export (optional)
+  neo4j:
+    enabled: false
+    uri: bolt://localhost:7687
+    user: neo4j
+    password: networksecurity
+
+# Logging
+logging:
+  level: INFO  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: /var/log/network_observer/agent.log
+  max_bytes: 10485760  # 10MB
+  backup_count: 5
+
+# Alerting (optional)
+alerts:
+  enabled: false
+  
+  # Email alerts
+  email:
+    enabled: false
+    smtp_server: smtp.gmail.com
+    smtp_port: 587
+    sender: alerts@example.com
+    recipients:
+      - security@example.com
+    use_tls: true
+  
+  # Webhook alerts
+  webhook:
+    enabled: false
+    url: https://hooks.slack.com/services/YOUR/WEBHOOK/URL
+    method: POST
+    headers:
+      Content-Type: application/json
+  
+  # Syslog alerts
+  syslog:
+    enabled: false
+    server: localhost
+    port: 514
+    facility: LOG_LOCAL0
+
+# Performance
+performance:
+  ebpf_enabled: false
+  max_packets_per_second: 10000
+  worker_threads: 4
+  batch_size: 100
+
+# Feature Flags
+features:
+  dns_analysis: true
+  http_analysis: true
+  tls_fingerprinting: true
+  graph_analysis: true
+  llm_analysis: false
+  baseline_learning: false

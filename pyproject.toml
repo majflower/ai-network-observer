@@ -1,0 +1,119 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-network-observer"
+version = "1.0.0"
+description = "AI-Driven Network Observability Agent for advanced threat detection"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "Security Research Team", email = "security@example.com"}
+]
+keywords = ["network", "security", "ai", "threat-detection", "observability"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Security",
+    "Topic :: System :: Monitoring",
+    "Topic :: System :: Networking :: Monitoring",
+]
+
+dependencies = [
+    "scapy>=2.5.0",
+    "networkx>=3.0",
+    "anthropic>=0.18.0",
+    "numpy>=1.24.0",
+    "pandas>=2.0.0",
+    "pyyaml>=6.0",
+    "requests>=2.31.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.7.0",
+    "flake8>=6.1.0",
+    "mypy>=1.4.0",
+]
+ebpf = [
+    "bcc>=0.28.0",
+]
+full = [
+    "neo4j>=5.8.0",
+    "elasticsearch>=8.7.0",
+    "matplotlib>=3.7.0",
+    "plotly>=5.14.0",
+]
+
+[project.scripts]
+network-observer = "src.main:main"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/ai-network-observer"
+Documentation = "https://ai-network-observer.readthedocs.io"
+Repository = "https://github.com/yourusername/ai-network-observer"
+"Bug Tracker" = "https://github.com/yourusername/ai-network-observer/issues"
+
+[tool.setuptools]
+package-dir = {"" = "."}
+packages = ["src", "src.core", "src.extractors", "src.intelligence", "src.privacy", "src.graph"]
+
+[tool.black]
+line-length = 100
+target-version = ['py39', 'py310', 'py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+multi_line_output = 3
+include_trailing_comma = true
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["*/tests/*", "*/__pycache__/*"]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false
+
+[tool.bandit]
+exclude_dirs = ["tests", "venv", ".venv"]
+skips = ["B101"]  # Skip assert_used test

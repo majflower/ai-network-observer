@@ -1,0 +1,25 @@
+{
+  "dashboard": {
+    "title": "Network Security Live",
+    "panels": [
+      {
+        "title": "Risk Score",
+        "targets": [{
+          "expr": "network_risk_score"
+        }]
+      },
+      {
+        "title": "DNS Threats",
+        "targets": [{
+          "expr": "rate(dns_high_risk_total[5m])"
+        }]
+      },
+      {
+        "title": "LLM Analysis Time",
+        "targets": [{
+          "expr": "histogram_quantile(0.95, llm_analysis_duration_seconds)"
+        }]
+      }
+    ]
+  }
+}

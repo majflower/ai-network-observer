@@ -1,0 +1,55 @@
+# Grafana Datasources Configuration
+# Auto-provisioned datasources
+
+apiVersion: 1
+
+datasources:
+  # Prometheus - Time series metrics
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: true
+    jsonData:
+      timeInterval: "15s"
+      queryTimeout: "60s"
+      httpMethod: POST
+    version: 1
+
+  # Neo4j - Graph database
+  - name: Neo4j
+    type: neo4j-datasource
+    access: proxy
+    url: bolt://neo4j:7687
+    editable: true
+    basicAuth: true
+    basicAuthUser: neo4j
+    jsonData:
+      encrypted: false
+    secureJsonData:
+      password: networksecurity
+    version: 1
+
+  # Elasticsearch - Logs
+  - name: Elasticsearch
+    type: elasticsearch
+    access: proxy
+    url: http://elasticsearch:9200
+    database: "network-logs-*"
+    editable: true
+    jsonData:
+      esVersion: "8.11.0"
+      timeField: "@timestamp"
+      interval: Daily
+      logMessageField: message
+      logLevelField: level
+    version: 1
+
+  # Loki (if you add it later for better log management)
+  # - name: Loki
+  #   type: loki
+  #   access: proxy
+  #   url: http://loki:3100
+  #   editable: true
+  #   version: 1

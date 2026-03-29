@@ -1,0 +1,195 @@
+# Prometheus Alert Rules for Network Security Monitoring
+
+groups:
+  - name: network_security_alerts
+    interval: 30s
+    rules:
+      # High-risk DNS queries detected
+      - alert: HighRiskDNSQueries
+        expr: rate(dns_high_risk_total[5m]) > 10
+        for: 2m
+        labels:
+          severity: warning
+          component: dns-analyzer
+        annotations:
+          summary: "High number of risky DNS queries detected"
+          description: "{{ $value }} high-risk DNS queries per second in the last 5 minutes"
+
+      # DGA (Domain Generation Algorithm) detected
+      - alert: DGADetected
+        expr: rate(dns_dga_detected_total[5m]) > 5
+        for: 1m
+        labels:
+          severity: critical
+          component: dns-analyzer
+        annotations:
+          summary: "DGA malware activity detected"
+          description: "Possible DGA-based malware detected: {{ $value }} DGA domains/sec"
+
+      # DNS Tunneling detected
+      - alert: DNSTunnelingDetected
+        expr: rate(dns_tunneling_detected_total[5m]) > 3
+        for: 2m
+        labels:
+          severity: critical
+          component: dns-analyzer
+        annotations:
+          summary: "DNS tunneling detected"
+          description: "Possible data exfiltration via DNS tunneling"
+
+      # C2 Beaconing detected
+      - alert: C2BeaconingDetected
+        expr: rate(dns_beaconing_detected_total[5m]) > 1
+        for: 5m
+        labels:
+          severity: critical
+          component: dns-analyzer
+        annotations:
+          summary: "C2 beaconing pattern detected"
+          description: "Possible command & control beaconing activity"
+
+      # HTTP attack patterns
+      - alert: HTTPAttacksDetected
+        expr: rate(http_attacks_total[5m]) > 5
+        for: 1m
+        labels:
+          severity: warning
+          component: http-analyzer
+        annotations:
+          summary: "HTTP attacks detected"
+          description: "{{ $value }} HTTP attacks per second (SQL injection, XSS, etc.)"
+
+      # Unknown TLS clients
+      - alert: UnknownTLSClients
+        expr: rate(tls_unknown_clients_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: info
+          component: tls-fingerprinter
+        annotations:
+          summary: "Unknown TLS clients detected"
+          description: "{{ $value }} unknown TLS client fingerprints per second"
+
+      # Network graph anomalies
+      - alert: NetworkGraphAnomalies
+        expr: graph_anomalies_total > 50
+        for: 10m
+        labels:
+          severity: warning
+          component: graph-analyzer
+        annotations:
+          summary: "Network behavior anomalies detected"
+          description: "{{ $value }} network graph anomalies detected"
+
+      # LLM analysis failures
+      - alert: LLMAnalysisFailures
+        expr: rate(llm_analysis_errors_total[5m]) > 0.5
+        for: 3m
+        labels:
+          severity: warning
+          component: llm-connector
+        annotations:
+          summary: "LLM analysis failures"
+          description: "Ollama LLM analysis failing: {{ $value }} errors/sec"
+
+      # High packet drop rate
+      - alert: HighPacketDropRate
+        expr: rate(packets_dropped_total[1m]) / rate(packets_total[1m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          component: capture-engine
+        annotations:
+          summary: "High packet drop rate"
+          description: "Dropping {{ $value | humanizePercentage }} of packets"
+
+      # Observer agent down
+      - alert: ObserverAgentDown
+        expr: up{job="network-observer"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: observer
+        annotations:
+          summary: "Network Observer agent is down"
+          description: "The main observer agent has been down for more than 1 minute"
+
+      # Neo4j database down
+      - alert: Neo4jDown
+        expr: up{job="neo4j"} == 0
+        for: 2m
+        labels:
+          severity: warning
+          component: neo4j
+        annotations:
+          summary: "Neo4j graph database is down"
+          description: "Neo4j has been down for more than 2 minutes"
+
+      # Elasticsearch down
+      - alert: ElasticsearchDown
+        expr: up{job="elasticsearch"} == 0
+        for: 2m
+        labels:
+          severity: warning
+          component: elasticsearch
+        annotations:
+          summary: "Elasticsearch is down"
+          description: "Elasticsearch has been down for more than 2 minutes"
+
+      # High memory usage
+      - alert: HighMemoryUsage
+        expr: container_memory_usage_bytes{name="ai-network-observer"} / container_spec_memory_limit_bytes{name="ai-network-observer"} > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          component: observer
+        annotations:
+          summary: "High memory usage in observer"
+          description: "Observer is using {{ $value | humanizePercentage }} of memory"
+
+      # High CPU usage
+      - alert: HighCPUUsage
+        expr: rate(container_cpu_usage_seconds_total{name="ai-network-observer"}[5m]) > 0.8
+        for: 10m
+        labels:
+          severity: warning
+          component: observer
+        annotations:
+          summary: "High CPU usage in observer"
+          description: "Observer is using {{ $value | humanizePercentage }} of CPU"
+
+  - name: security_thresholds
+    interval: 60s
+    rules:
+      # Sustained high risk score
+      - alert: SustainedHighRiskActivity
+        expr: avg_over_time(network_risk_score[30m]) > 70
+        for: 15m
+        labels:
+          severity: critical
+          component: analyzer
+        annotations:
+          summary: "Sustained high-risk network activity"
+          description: "Average risk score of {{ $value }} over 30 minutes"
+
+      # Spike in network connections
+      - alert: ConnectionSpike
+        expr: rate(network_connections_total[5m]) > 1000
+        for: 3m
+        labels:
+          severity: warning
+          component: graph-analyzer
+        annotations:
+          summary: "Spike in network connections"
+          description: "{{ $value }} new connections per second"
+
+      # Unusual data transfer
+      - alert: UnusualDataTransfer
+        expr: rate(network_bytes_total[5m]) > 100000000  # 100MB/s
+        for: 10m
+        labels:
+          severity: info
+          component: capture-engine
+        annotations:
+          summary: "Unusual data transfer rate"
+          description: "{{ $value | humanize }}B/s data transfer rate"

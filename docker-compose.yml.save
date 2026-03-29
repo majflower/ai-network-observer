@@ -1,0 +1,108 @@
+version: '3.8'
+
+services:
+  # Main Network Observer Agent
+  
+    
+  # Optional: Neo4j for graph storage
+  neo4j:
+    image: neo4j:5.14
+    container_name: network-graph-db
+    profiles:
+      - full
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_AUTH=neo4j/networksecurityobserver:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-network-observer
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    privileged: true
+    environment:
+      - CAPTURE_INTERFACE=ens33
+      - LOCAL_AI_URL=http://172.21.49.168:11434
+      - ENABLE_LLM=true
+      - ANTHROPIC_API_KEY=local-mode
+    volumes:
+      - ./src:/app/src
+      - ./output:/app/output
+      - ./logs:/var/log/network_observer
+    restart: unless-stopped
+    # ON NE GARDE QUE CETTE COMMANDE SIMPLE :
+      - NEO4J_PLUGINS=["graph-data-science", "apoc"]
+      - NEO4J_dbms_memory_heap_max__size=1G
+      - NEO4J_dbms_memory_heap_initial_size=512m
+      - NEO4J_dbms_memory_pagecache_size=512m
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    restart: unless-stopped
+
+  # Optional: Elasticsearch for log storage
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: network-logs-db
+    profiles:
+      - full
+    ports:
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    restart: unless-stopped
+
+  # Optional: Grafana for visualization
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: network-dashboard
+    profiles:
+      - full
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=networksecurity
+      - GF_INSTALL_PLUGINS=neo4j-datasource
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    depends_on:
+      - neo4j
+      - elasticsearch
+    restart: unless-stopped
+
+  # Optional: Prometheus for metrics
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    container_name: network-metrics
+    profiles:
+      - full
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    restart: unless-stopped
+
+volumes:
+  neo4j_data:
+  neo4j_logs:
+  es_data:
+  grafana_data:
+  prometheus_data:
+
+networks:
+  default:
+    name: network-observer-net
