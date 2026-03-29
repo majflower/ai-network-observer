@@ -289,7 +289,7 @@ command: ["-i", "ens33", "--duration", "2", "--enable-llm"]
 
 ```bash
 # .env
-OLLAMA_BASE_URL=http://192.168.197.1:11434
+OLLAMA_BASE_URL=http://localhost:11434
 OLLAMA_MODEL=llama3.2
 ENABLE_LLM=true
 ```

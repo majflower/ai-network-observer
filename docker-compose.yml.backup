@@ -16,7 +16,7 @@ services:
     environment:
       - CAPTURE_INTERFACE=ens33
       - CAPTURE_INTERFACE=eth0
-      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://192.168.197.1:11434}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://localhost:11434}
       - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3.2}
       - ENABLE_LLM=true
     # Neo4j
@@ -88,7 +88,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=networksecurity
       - GF_PLUGINS_ALLOW_LOCAL_MODE=true
       - GF_SERVER_HTTP_ADDR=0.0.0.0
-      - GF_SERVER_DOMAIN=192.168.197.128
+      - GF_SERVER_DOMAIN=localhost28
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/plugins:/var/lib/grafana/plugins

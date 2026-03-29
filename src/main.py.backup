@@ -58,7 +58,7 @@ class NetworkObservabilityAgent:
         self.llm_connector = None
         if config.get('enable_llm', False):
             self.llm_connector = LLMConnector(
-                base_url=config.get('ollama_base_url', 'http://192.168.197.1:11434'),
+                base_url=config.get('ollama_base_url', 'http://localhost:11434'),
                 model=config.get('llm_model', 'llama3.2:latest'),
             )
         
