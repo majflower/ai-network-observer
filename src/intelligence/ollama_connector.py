@@ -40,7 +40,7 @@ class OllamaWSLConnector:
     def _detect_ollama_url(self) -> str:
         """Auto-detect Ollama URL"""
         possible_urls = [
-            "http://192.168.197.1:11434",  # PC IP
+            "http://localhost:11434",  # PC IP
             "http://172.21.49.168:11434",  # WSL IP
             "http://host.docker.internal:11434",
             "http://localhost:11434"
@@ -56,7 +56,7 @@ class OllamaWSLConnector:
                 continue
         
         logger.warning("Could not auto-detect Ollama")
-        return "http://192.168.197.1:11434"
+        return "http://localhost:11434"
     
     def _test_connection(self):
         """Test connection to Ollama"""

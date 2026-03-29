@@ -87,7 +87,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=networksecurity
       - GF_PLUGINS_ALLOW_LOCAL_MODE=true
       - GF_SERVER_HTTP_ADDR=0.0.0.0
-      - GF_SERVER_DOMAIN=192.168.197.128
+      - GF_SERVER_DOMAIN=localhost
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/plugins:/var/lib/grafana/plugins

@@ -149,3 +149,8 @@ neo4j_data/
 es_data/
 grafana_data/
 prometheus_data/
+logs/*.json
+logs/*.txt
+**/__pycache__/
+*.pyc
+.env

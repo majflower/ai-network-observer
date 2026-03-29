@@ -7,7 +7,7 @@ echo "=== Network Observer Health Check ==="
 docker-compose ps | grep -q "Up" && echo "✓ Containers running" || echo "✗ Containers down"
 
 # Check Ollama
-curl -s http://192.168.197.1:11434/api/tags > /dev/null && echo "✓ Ollama connected" || echo "✗ Ollama unreachable"
+curl -s http://localhost:11434/api/tags > /dev/null && echo "✓ Ollama connected" || echo "✗ Ollama unreachable"
 
 # Check logs directory
 [ -d logs ] && [ "$(ls -A logs)" ] && echo "✓ Logs present" || echo "⚠ No logs"
