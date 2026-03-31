@@ -4,349 +4,281 @@
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Docker](https://img.shields.io/badge/docker-ready-brightgreen.svg)](https://www.docker.com/)
 
-**AI-Powered Network Security Monitoring** - Détection et analyse automatique des menaces réseau grâce à l'Intelligence Artificielle.
+**Détection intelligente des menaces réseau par IA** - Projet Master Cybersécurité
 
-Projet de Master en Cybersécurité combinant Machine Learning (Isolation Forest) et Large Language Models (Ollama) pour une surveillance réseau intelligente en temps réel.
+Système de monitoring combinant **Machine Learning** (Isolation Forest) et **LLM** (Ollama) pour détecter automatiquement les menaces réseau en temps réel.
 
 ---
 
-## 🎯 Caractéristiques
+## 🎯 Fonctionnalités
 
-### 🤖 Détection Hybride IA
-- **Machine Learning** : Isolation Forest pour détection d'anomalies statistiques
-- **LLM Analysis** : Ollama (llama3.2) pour analyse contextuelle approfondie
-- **Corrélation intelligente** : Fusion ML + LLM pour réduction des faux positifs
-
-### ⚡ Menaces Détectées
-- **DGA Malware** : Domain Generation Algorithm detection
-- **C2 Beaconing** : Command & Control communication patterns
-- **DNS Tunneling** : Exfiltration de données via DNS
+### Détection Automatique
+- **DGA Malware** : Détection de Domain Generation Algorithms
+- **C2 Beaconing** : Identification de communications Command & Control
+- **DNS Tunneling** : Détection d'exfiltration de données via DNS
 - **Port Scanning** : Reconnaissance réseau
-- **Anomalies comportementales** : Déviations des patterns normaux
+- **Anomalies** : Déviations comportementales
 
-### 📊 Stack Technique Complète
+### Stack Technique
 ```
-┌─────────────────────────────────────────────────┐
-│  Capture    │  Scapy / eBPF (AF_PACKET)        │
-│  Analysis   │  Python 3.8+ / NetworkX          │
-│  ML Engine  │  scikit-learn (Isolation Forest) │
-│  LLM        │  Ollama (llama3.2)               │
-│  Storage    │  Neo4j / Elasticsearch           │
-│  Monitoring │  Prometheus / Grafana            │
-│  Deploy     │  Docker / Docker Compose         │
-└─────────────────────────────────────────────────┘
+Capture     : Scapy / eBPF
+Analysis    : Python 3.8+
+ML Engine   : scikit-learn (Isolation Forest)
+LLM         : Ollama (llama3.2)
+Storage     : Neo4j + Elasticsearch
+Monitoring  : Prometheus + Grafana
+Deploy      : Docker Compose
 ```
+
+---
+
+## 🎯 Modes d'Utilisation
+
+### Mode 1 : Détection ML (Rapide) ⚡
+- Installation en 5 minutes
+- Détection d'anomalies par ML
+- Alertes automatiques
+- **Pas besoin d'Ollama**
+
+**Idéal pour :** Tests rapides, ressources limitées
+
+### Mode 2 : ML + LLM (Complet) 🧠
+- Détection ML + Analyse IA approfondie
+- Rapports en langage naturel
+- Recommandations de remédiation
+- **Nécessite Ollama**
+
+**Idéal pour :** Analyse approfondie, apprentissage complet
+
+---
+
+## 📦 Installation d'Ollama (Mode 2 uniquement)
+
+**Linux :**
+```bash
+curl -fsSL https://ollama.ai/install.sh | sh
+ollama pull llama3.2
+ollama serve &
+```
+
+**macOS :**
+```bash
+brew install ollama
+ollama pull llama3.2
+ollama serve &
+```
+
+**Windows :**
+1. Télécharger depuis https://ollama.ai/download
+2. Installer l'application
+3. Dans PowerShell : `ollama pull llama3.2`
+
+**Vérification :**
+```bash
+curl http://localhost:11434/api/tags
+# Devrait retourner la liste incluant llama3.2
+```
+
+**Taille :** ~4.7 GB | **RAM requise :** 8-16 GB
 
 ---
 
 ## 🚀 Démarrage Rapide
 
-### Prérequis
-- Docker & Docker Compose
-- 4GB RAM minimum (8GB recommandé)
-- Interface réseau accessible
+### Mode 1 : SANS Ollama (Recommandé pour débuter)
 
-### Installation (5 minutes)
 ```bash
-# 1. Cloner le repository
+# 1. Cloner
 git clone https://github.com/majflower/ai-network-observer.git
 cd ai-network-observer
 
-# 2. Configuration (optionnel - LLM)
-echo "ENABLE_LLM=true" > .env
-echo "OLLAMA_BASE_URL=http://localhost:11434" >> .env
+# 2. Configuration
+echo "ENABLE_LLM=false" > .env
 
-# 3. Lancer la stack complète
+# 3. Lancer
 docker-compose up -d
 
-# 4. Vérifier les services
+# 4. Vérifier
 docker-compose ps
 ```
 
-### Test Rapide (Sans Ollama)
-```bash
-# Test en 2 minutes sans LLM
-echo "ENABLE_LLM=false" > .env
-docker-compose up observer
+**Résultats disponibles dans 2-3 minutes** → `logs/alerts_*.json`
 
-# Les résultats apparaissent dans logs/ après 1-2 minutes
+---
+
+### Mode 2 : AVEC Ollama
+
+```bash
+# 1. Cloner
+git clone https://github.com/majflower/ai-network-observer.git
+cd ai-network-observer
+
+# 2. Vérifier Ollama
+curl http://localhost:11434/api/tags
+
+# 3. Configuration
+cat > .env << 'EOF'
+ENABLE_LLM=true
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama3.2
+EOF
+
+# 4. Lancer
+docker-compose up -d
+
+# 5. Vérifier
+docker-compose logs observer | grep -i ollama
+```
+
+---
+
+## 📊 Accès aux Dashboards
+
+### Grafana (Visualisation)
+- **URL** : http://localhost:3000
+- **Login** : admin / networksecurity
+- Dashboards : Network Security Overview, ML Anomaly Detection
+
+### Neo4j (Graphe Réseau)
+- **URL** : http://localhost:7474
+- **Login** : neo4j / networksecurity
+- Query exemple :
+```cypher
+MATCH (h:Host)-[r:DNS_QUERY]->(d:Domain)
+WHERE d.risk_score > 50
+RETURN h, r, d LIMIT 25
+```
+
+### Prometheus (Métriques)
+- **URL** : http://localhost:9090
+- Query exemple : `network_packets_total`
+
+⚠️ **IMPORTANT** : Changez les mots de passe par défaut en production !
+
+---
+
+## 🧪 Tests & Validation
+
+### Simuler des Attaques (Sur VM isolée uniquement)
+
+```bash
+# DGA Malware
+bash tests/simulate-dga.sh
+
+# C2 Beaconing
+bash tests/simulate-c2.sh
+
+# DNS Tunneling
+bash tests/simulate-dns-tunnel.sh
+
+# Vérifier les détections
+grep "DGA\|C2_BEACONING\|DNS_TUNNELING" logs/alerts_*.json
+```
+
+---
+
+## 🔧 Commandes Utiles
+
+```bash
+# Démarrer
+docker-compose up -d
+
+# Arrêter
+docker-compose down
+
+# Logs en temps réel
+docker-compose logs -f observer
+
+# État des services
+docker-compose ps
+
+# Redémarrer un service
+docker-compose restart observer
+
+# Voir les alertes
 tail -f logs/alerts_*.json
 ```
 
 ---
 
-## 📊 Interface & Visualisation
+## 📚 Documentation Détaillée
 
-### Dashboards Grafana
-- **URL** : http://localhost:3000
-- **Login** : admin / networksecurity
-- **Dashboards** :
-  - Network Security Overview
-  - ML Anomaly Detection
-  - Threat Timeline
-
-### Neo4j Graph Database
-- **URL** : http://localhost:7474
-- **Login** : neo4j / networksecurity
-- **Visualisation** : Graphe réseau interactif
-
-### Prometheus Metrics
-- **URL** : http://localhost:9090
-- **Métriques temps réel** : Packets, Anomalies, Alerts
+- **[TESTING_GUIDE.md](TESTING_GUIDE.md)** - Guide de test complet
+- **[ML_README.md](ML_README.md)** - Documentation Machine Learning
+- **[CHANGELOG.md](CHANGELOG.md)** - Historique des versions
 
 ---
 
-## 🎓 Cas d'Usage
+## ❓ FAQ
 
-### 1. Surveillance Réseau Continue
-```bash
-# Monitoring 24/7 avec alertes
-docker-compose up -d
-# Consulter Grafana pour vue temps réel
-```
+**Q : Ça ralentit mon réseau ?**  
+R : Non, écoute passive sans interception.
 
-### 2. Analyse Post-Incident
-```bash
-# Rejouer du trafic capturé
-python src/main.py --pcap capture.pcap --enable-llm
-```
+**Q : C'est légal ?**  
+R : Oui, sur VOTRE réseau/VM uniquement.
 
-### 3. Threat Hunting
-```bash
-# Recherche proactive de menaces
-# Utiliser Neo4j pour explorer le graphe réseau
-# Cypher query: MATCH (h:Host)-[r:DNS_QUERY]->(d:Domain) 
-#               WHERE d.risk_score > 70 RETURN h,r,d
-```
+**Q : Détection 100% fiable ?**  
+R : Non, outil d'aide à la détection, pas de garantie absolue.
+
+**Q : Observer ne capture rien ?**  
+R : Vérifier l'interface réseau dans `docker-compose.yml` (ligne `CAPTURE_INTERFACE`)
+
+**Q : Ollama connection refused ?**  
+R : Vérifier qu'Ollama tourne : `ps aux | grep ollama` puis `ollama serve &`
+
+**Q : Grafana vide ?**  
+R : Normal au début, attendre 5-10 minutes de collecte.
 
 ---
 
-## 🧪 Tests de Validation
+## 🔒 Sécurité & Production
 
-### Scénarios d'Attaque Simulés
-```bash
-# Simuler du trafic DGA
-bash tests/simulate-dga.sh
+**⚠️ Ce projet utilise des mots de passe par défaut pour la démo.**
 
-# Simuler C2 beaconing
-bash tests/simulate-c2.sh
-
-# Simuler DNS tunneling
-bash tests/simulate-dns-tunnel.sh
-
-# Vérifier les détections
-grep "DGA" logs/alerts_*.json
-grep "C2_BEACONING" logs/alerts_*.json
+En production, CHANGEZ-LES :
+```yaml
+# Dans docker-compose.yml
+NEO4J_PASSWORD=VotreMotDePasseSecurise
+GF_SECURITY_ADMIN_PASSWORD=VotreMotDePasseSecurise
 ```
+
+**Docker privileged mode** : Requis pour capture réseau (CAP_NET_RAW).
 
 ---
 
-## 🏗️ Architecture
-```
-┌─────────────────────────────────────────────────────┐
-│                  AI Network Observer                │
-├─────────────────────────────────────────────────────┤
-│                                                     │
-│  ┌──────────┐    ┌──────────┐    ┌──────────┐    │
-│  │ Capture  │───▶│ Analysis │───▶│ ML Model │    │
-│  │  Engine  │    │  Engine  │    │ (Isol.F) │    │
-│  └──────────┘    └──────────┘    └──────────┘    │
-│       │                                  │         │
-│       ▼                                  ▼         │
-│  ┌──────────┐                    ┌──────────┐    │
-│  │   Neo4j  │◀──────────────────▶│  Ollama  │    │
-│  │  Graph   │                    │   LLM    │    │
-│  └──────────┘                    └──────────┘    │
-│       │                                  │         │
-│       ▼                                  ▼         │
-│  ┌──────────────────────────────────────────┐    │
-│  │        Prometheus + Grafana              │    │
-│  │        Monitoring & Alerting             │    │
-│  └──────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────┘
-```
+## 🎓 Contexte Académique
 
----
-
-## 🔧 Configuration Avancée
-
-### Variables d'Environnement (.env)
-```bash
-# LLM Configuration
-ENABLE_LLM=true
-OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=llama3.2
-
-# Capture Settings
-CAPTURE_INTERFACE=eth0
-CAPTURE_BACKEND=scapy  # ou 'ebpf'
-PERFORMANCE_MODE=false
-
-# ML Settings
-ML_CONTAMINATION=0.1
-ML_TRAINING_SESSIONS=10
-```
-
-### Mode Performance (Production)
-```bash
-# Utiliser eBPF au lieu de Scapy
-CAPTURE_BACKEND=ebpf
-PERFORMANCE_MODE=true
-
-# Build avec eBPF support
-docker build -f Dockerfile.ubuntu-ebpf -t observer-ebpf .
-```
-
----
-
-## 📈 Machine Learning
-
-### Entraînement du Modèle
-```bash
-# Collecter données normales (10 sessions minimum)
-docker-compose exec observer python -c "
-from src.ml.training_pipeline import MLTrainingPipeline
-pipeline = MLTrainingPipeline()
-pipeline.collect_training_session()
-"
-
-# Entraîner le modèle
-bash train-ml-model.sh
-
-# Évaluer performance
-docker-compose exec observer python -c "
-from src.ml.training_pipeline import MLTrainingPipeline
-p = MLTrainingPipeline()
-print(p.evaluate_model())
-"
-```
-
-### Métriques ML
-- **Precision** : Taux de vrais positifs
-- **Recall** : Taux de détection
-- **F1-Score** : Moyenne harmonique
-- **Contamination** : Seuil d'anomalies (défaut: 10%)
-
----
-
-## 🛡️ Sécurité & Production
-
-### ⚠️ Avertissement Sécurité
-
-**Ce projet utilise des mots de passe par défaut pour la démo :**
-- Neo4j : `networksecurity`
-- Grafana : `networksecurity`
-
-**🔴 EN PRODUCTION, CHANGEZ-LES IMMÉDIATEMENT !**
-```bash
-# Modifier docker-compose.yml
-NEO4J_PASSWORD=VotreMotDePasseSecurisé
-GF_SECURITY_ADMIN_PASSWORD=VotreMotDePasseSecurisé
-```
-
-### Configuration Firewall
-```bash
-# Restreindre l'accès aux dashboards
-# Exemple avec ufw (Ubuntu)
-sudo ufw allow from 192.168.1.0/24 to any port 3000  # Grafana
-sudo ufw allow from 192.168.1.0/24 to any port 7474  # Neo4j
-```
-
-### Docker Privileged Mode
-
-Le container observer nécessite `privileged: true` pour :
-- Accès CAP_NET_RAW (capture de paquets)
-- Interface réseau en mode promiscuous
-
-**C'est normal et requis pour la capture réseau.**
-
----
-
-## 📚 Documentation
-
-- **[TESTING_GUIDE.md](TESTING_GUIDE.md)** : Guide de test complet
-- **[ML_README.md](ML_README.md)** : Documentation Machine Learning
-- **[SECURITY.md](SECURITY.md)** : Politique de sécurité
-- **[CONTRIBUTING.md](CONTRIBUTING.md)** : Guide de contribution
-
----
-
-## 🎯 Roadmap
-
-- [x] Capture réseau Scapy
-- [x] Analyse DNS/HTTP/TLS
-- [x] Intégration LLM (Ollama)
-- [x] Machine Learning (Isolation Forest)
-- [x] Graphe Neo4j
-- [x] Dashboards Grafana
-- [ ] Support eBPF complet
-- [ ] Intégration SIEM (Splunk/ELK)
-- [ ] API REST
-- [ ] Interface Web React
+Projet Master Cybersécurité démontrant :
+- ✅ Intégration ML/LLM pour la sécurité
+- ✅ Architecture microservices Docker
+- ✅ Stack monitoring complète
+- ✅ Détection de menaces avancées
 
 ---
 
 ## 🤝 Contribution
 
-Les contributions sont les bienvenues ! Consultez [CONTRIBUTING.md](CONTRIBUTING.md).
-
-### Développement Local
-```bash
-# Installation environnement dev
-pip install -r requirements-dev.txt
-
-# Pre-commit hooks
-pre-commit install
-
-# Tests
-pytest tests/
-
-# Linting
-pylint src/
-```
+Issues & Pull Requests bienvenues sur [GitHub](https://github.com/majflower/ai-network-observer/issues)
 
 ---
 
 ## 📄 Licence
 
-MIT License - Voir [LICENSE](LICENSE) pour détails.
-
----
-
-## 🙏 Remerciements
-
-- **Anthropic** : Claude API pour l'analyse LLM
-- **Ollama** : LLM local open-source
-- **Neo4j** : Graph database
-- **Scapy** : Packet manipulation
-- **scikit-learn** : Machine Learning
+MIT License - Voir [LICENSE](LICENSE)
 
 ---
 
 ## 📧 Contact
 
 - **GitHub** : [@majflower](https://github.com/majflower)
-- **Project** : [ai-network-observer](https://github.com/majflower/ai-network-observer)
-
----
-
-## 🎓 Contexte Académique
-
-Projet réalisé dans le cadre d'un Master en Cybersécurité, démontrant l'application pratique de l'IA pour la détection de menaces réseau en temps réel.
-
-**Objectifs pédagogiques atteints :**
-- ✅ Intégration ML/LLM pour la sécurité
-- ✅ Architecture microservices avec Docker
-- ✅ Stack de monitoring complète
-- ✅ Analyse de protocoles réseau
-- ✅ Détection de menaces avancées
+- **Projet** : [ai-network-observer](https://github.com/majflower/ai-network-observer)
 
 ---
 
 <div align="center">
 
-**⭐ Si ce projet vous aide, n'hésitez pas à lui donner une étoile ! ⭐**
+**⭐ Si ce projet vous aide, donnez-lui une étoile ! ⭐**
 
-Made with ❤️ for Network Security
+Made with ❤️ for Cybersecurity Education
 
 </div>
